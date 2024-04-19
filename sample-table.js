@@ -65,12 +65,28 @@ initJSTree = function() {
     $('#myjstree').jstree({
         'core' : {
             'data' : [
-                { "text" : "Root node", "children" : [
-                    { "text" : "Child node 1" },
-                    { "text" : "Child node 2" }
-                ]}
-            ]
+                { "text" : "Root node",
+		  "children" : [
+                      { id: "child_node_1",
+			"text" : "Child node 1" },
+                      { id: "child_node_2",
+			"text" : "Child node 2" }
+                  ]}
+            ],
+	    check_callback: true // allow for tree modification
         }
+    }).on("select_node.jstree", function (e, data) {
+        if (data.node.id.startsWith("child_node")) {
+            const newNodeId = "new_child_" + new Date().getTime(); // Unique ID for the new node
+            $('#myjstree').jstree('create_node',
+				  data.node,
+				  { "text": "New Child","id": newNodeId },
+				  "last",
+				  function(new_node) {
+				      console.log("New node created:", new_node);
+				      $('#myjstree').jstree('open_node', data.node); // Automatically expand
+				  });
+	}
     });
 }
 
