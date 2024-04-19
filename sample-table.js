@@ -46,11 +46,47 @@ document.addEventListener("DOMContentLoaded", function() {
             });
 
 	    // Add click event listener for rows
-            $('#data-table tbody').on('click', 'tr', function () {
-                const rowIdx = table.row(this).index(); // Get the index of the clicked row
-                const rowData = table.row(this).data(); // Get the data of the clicked row
-                alert(`Row index: ${rowIdx + 1}\nName: ${rowData["Name"]}`)
-            });
+            $('#data-table tbody').on('click', 'tr', openRow(data, table));
         })
         .catch(error => console.error('Error loading the CSV file:', error));
 });
+
+
+// Return callback that can run when the user clicks a table
+openRow = function(data, table) {
+    return function () {
+	var rowIdx = table.row(this).index();  // Index of the clicked row
+	var rowData = table.row(this).data();      // Get the data of the clicked row
+
+	var details = '<ul>';
+        // Generate list items for each field
+        data.meta.fields.forEach(function(field) {
+            if (field === "Height") {
+                // Add an input field for editing the Height
+                details += '<li>' + field + ': <input type="text" id="edit-height" value="' + rowData[field] + '"></li>';
+            } else {
+                // Display other fields as read-only
+                details += '<li>' + field + ': ' + rowData[field] + '</li>';
+            }
+	});
+	details += '</ul>';
+	
+	$("#details-content").html(details);      // Set the content of the dialog
+	$("#row-details").dialog({                // Open the dialog
+            modal: true,
+            width: 400,
+            buttons: {
+                "Save Changes": function() {
+                    var updatedHeight = $('#edit-height').val();
+                    rowData['Height'] = updatedHeight;  // Update the Height in rowData
+		    console.log(rowIdx);
+                    table.row(rowIdx).data(rowData).draw();  // Update the DataTable row
+                    $(this).dialog("close");
+                },
+		Cancel: function() {
+                    $(this).dialog("close");
+		}
+            }
+	});
+    };
+}

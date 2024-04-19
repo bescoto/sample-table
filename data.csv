@@ -1,5 +1,5 @@
-Name,Region,Date,Visit
-Alice,North America,1/1/2024,1
-Bob,Asia,7/1/2023,1
-Bob,Asia,7/1/2023,2
-Cindy,Africa,1/1/2023,1
+Name,Region,Date,Visit,Height
+Alice,North America,1/1/2024,1,5.5
+Bob,Asia,7/1/2023,1,
+Bob,Asia,7/1/2023,2,
+Cindy,Africa,1/1/2023,1,
